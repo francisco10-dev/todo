@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 
-export const TodoForm = ({addTodo}) => {
+export const TodoForm = ({addTodo, loading}) => {
     const [value, setValue] = useState('');
 
     const handleSubmit = (e) => {
@@ -15,8 +15,8 @@ export const TodoForm = ({addTodo}) => {
       };
   return (
     <form onSubmit={handleSubmit} className="TodoForm">
-    <input type="text" value={value} onChange={(e) => setValue(e.target.value)} className="todo-input" placeholder='Cúal es la tarea para hoy?'/>
-    <button type="submit" className='todo-btn'>Agregar Tarea</button>
+    <input type="text" value={value} onChange={(e) => setValue(e.target.value)} className="todo-input" placeholder='Descripción'/>
+    <button type="submit" className='todo-btn'> {loading ? 'Agregando...': 'Agregar tarea'}</button>
   </form>
   )
 }
