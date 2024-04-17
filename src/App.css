@@ -145,3 +145,24 @@ h1 {
   border-style: solid;
   border-color: transparent transparent #f44336 transparent; /* Color del borde */
 }
+
+
+.flag2 {
+  position: relative;
+  background-color: #927371; /* Color de fondo de la bandera */
+  color: white; /* Color del texto */
+  padding: 10px 20px; /* Espaciado interno */
+  border-radius: 5px; /* Bordes redondeados */
+  width: 200px; /* Ancho de la bandera */
+}
+
+.flag2::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 10px 10px 10px;
+  border-style: solid;
+  border-color: transparent transparent #524241 transparent; /* Color del borde */
+}

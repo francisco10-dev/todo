@@ -1,27 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { Todo } from "./Todo";
 import { TodoForm } from "./TodoForm";
-import { v4 as uuidv4 } from "uuid";
 import { EditTodoForm } from "./EditTodoForm";
 import axios from "axios";
+import { message } from "antd";
 
 const apiUrl = "https://apitask-mhcy.onrender.com/"; 
-const local = "http://localhost:3000/tasks";
 
 export const TodoWrapper = () => {
   const [loadingData, setLoadingData] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
-  const[isDeleting, setIsDeleting ] = useState(false);
   const [data, setData] = useState([]);
   const [selected, setSelected] = useState();
+  const [completedTasks, setCompletedTasks] = useState(0);
 
   const loadData = async () => {
     try {
       setLoadingData(true);
       const response = await axios.get(apiUrl + 'tasks');
       setData(response.data);
-      console.log(response.data);
     } catch (error) {
       console.log(error);
     }finally{
@@ -45,11 +43,14 @@ export const TodoWrapper = () => {
 
   const deleteTask = async (id) => {
     try {
+      message.loading('Eliminando tarea...');
       const response = await axios.delete(apiUrl + 'delete-tasks/' + id);
       console.log(response);
       loadData();
     } catch (error) {
       console.log(error);
+    }finally{
+      message.destroy();
     }
   }
 
@@ -73,6 +74,10 @@ export const TodoWrapper = () => {
     loadData();
   },[]);
 
+  useEffect(() => {
+    completedCount();
+  },[data]);
+
   const toggleComplete = (task) => {
     const status = task.status === 'pending' ? 'completed' : 'pending';
     const data = {
@@ -87,7 +92,13 @@ export const TodoWrapper = () => {
     setSelected(id);
   }
 
+  const completedCount = () => {
+    const completedTasks = data.filter(task => task.status === 'completed');
+    setCompletedTasks(completedTasks.length);
+  }
+
   return (
+    <div>
     <div className="TodoWrapper">
       <div>
         <h1>TO DO</h1>
@@ -108,11 +119,17 @@ export const TodoWrapper = () => {
               />
             )
           )}        
-        </div> : 
-        <div class="flag">
-          <span class="text">No hay tareas pendientes</span>
-        </div>
+        </div> : !loadingData ?
+        <div className="flag">
+          <span class="text">No hay tareas por hacer</span>
+        </div> : null
       }
     </div>
+    {data.length > 0 && (
+      <div class="flag2">
+          <span className="text">Tienes {completedTasks} {completedTasks !== 1 ? 'tareas completadas' : ' tarea completada'} </span>
+      </div>      
+    )}
+  </div>
   );
 };
