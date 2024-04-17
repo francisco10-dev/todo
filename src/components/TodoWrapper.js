@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Todo } from "./Todo";
 import { TodoForm } from "./TodoForm";
 import { EditTodoForm } from "./EditTodoForm";
@@ -70,13 +70,20 @@ export const TodoWrapper = () => {
     }
   }
 
+
   useEffect(()=> {
     loadData();
   },[]);
 
+  const completedCount = useCallback(() => {
+    const completedTasks = data.filter(task => task.status === 'completed');
+    setCompletedTasks(completedTasks.length);
+  }, [data, setCompletedTasks]);
+  
   useEffect(() => {
-    completedCount();
-  },[data]);
+    completedCount(); 
+  }, [completedCount]);  
+  
 
   const toggleComplete = (task) => {
     const status = task.status === 'pending' ? 'completed' : 'pending';
@@ -90,11 +97,6 @@ export const TodoWrapper = () => {
 
   const editTodo = (id) => {
     setSelected(id);
-  }
-
-  const completedCount = () => {
-    const completedTasks = data.filter(task => task.status === 'completed');
-    setCompletedTasks(completedTasks.length);
   }
 
   return (
